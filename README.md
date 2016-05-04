@@ -28,12 +28,11 @@ You need to explicitly specify what data you want in each collection. Put the fo
 Jekyll::Popolo.register(:senate, File.read('australia-senate-popolo.json'))
 
 Jekyll::Popolo.process(:senate) do |popolo|
-  # `popolo` is an instance of `Everypolitician::Popolo`
-  # @see https://github.com/everypolitician/everypolitician-popolo
+  # `popolo` is a Hash with string keys
   {
-    mps: popolo.people,
-    areas: popolo.areas,
-    parties: popolo.organizations.where(classification: 'party'),
+    mps: popolo['people'],
+    areas: popolo['areas'],
+    parties: popolo['organizations'].select { |o| o['classification'] == 'party' },
   }
 end
 ```

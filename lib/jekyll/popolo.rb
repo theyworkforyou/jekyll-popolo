@@ -1,6 +1,6 @@
 require 'jekyll/popolo/version'
 require 'jekyll'
-require 'everypolitician/popolo'
+require 'json'
 
 module Jekyll
   module Popolo
@@ -12,7 +12,7 @@ module Jekyll
 
     def self.register(popolo_name, popolo_json_string)
       @popolo_files ||= {}
-      @popolo_files[popolo_name] = ::Everypolitician::Popolo.parse(popolo_json_string)
+      @popolo_files[popolo_name] = JSON.parse(popolo_json_string)
     end
 
     def self.process(popolo_name)
@@ -25,9 +25,9 @@ module Jekyll
         collection_name = name.to_s
         collection = Jekyll::Collection.new(site, collection_name)
         items.each do |item|
-          path = File.join(site.source, "_#{collection_name}", "#{Jekyll::Utils.slugify(item.id)}.md")
+          path = File.join(site.source, "_#{collection_name}", "#{Jekyll::Utils.slugify(item['id'])}.md")
           doc = Document.new(path, collection: collection, site: site)
-          doc.merge_data!(item.document)
+          doc.merge_data!(item)
           if site.layouts.key?(collection_name)
             doc.merge_data!('layout' => collection_name)
           end
