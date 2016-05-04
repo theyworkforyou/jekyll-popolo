@@ -4,24 +4,24 @@ require 'json'
 
 module Jekyll
   module Popolo
-    class PopoloGenerator < Jekyll::Generator
-      def generate(site)
-        Jekyll::Popolo.generate(site)
-      end
-    end
-
     def self.register(popolo_name, popolo_json_string)
       @popolo_files ||= {}
       @popolo_files[popolo_name] = JSON.parse(popolo_json_string)
     end
 
-    def self.process(popolo_name)
-      @collections ||= {}
-      @collections.merge!(yield(@popolo_files[popolo_name]))
+    def self.process(popolo_name, &block)
+      @popolo_processors ||= []
+      @popolo_processors << {
+        popolo_name: popolo_name,
+        block: block,
+      }
     end
 
     def self.generate(site)
-      @collections.each do |name, items|
+      collections = @popolo_processors.reduce({}) do |memo, processor|
+        memo.merge(processor[:block].call(site, @popolo_files[processor[:popolo_name]]))
+      end
+      collections.each do |name, items|
         collection_name = name.to_s
         collection = Jekyll::Collection.new(site, collection_name)
         items.each do |item|
@@ -37,4 +37,8 @@ module Jekyll
       end
     end
   end
+end
+
+Jekyll::Hooks.register :site, :post_read do |site|
+  Jekyll::Popolo.generate(site)
 end
