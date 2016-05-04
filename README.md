@@ -1,15 +1,15 @@
 # Jekyll::Popolo
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jekyll/popolo`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Populate Jekyll Collections dynamically from Popolo JSON.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'jekyll-popolo'
+group :jekyll_plugins do
+  gem 'jekyll-popolo'
+end
 ```
 
 And then execute:
@@ -22,7 +22,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You need to explicitly specify what data you want in each collection. Put the following in `_plugins/popolo.rb`:
+
+```ruby
+Jekyll::Popolo.register do |popolo|
+  # `popolo` is an instance of `Everypolitician::Popolo`
+  # @see https://github.com/everypolitician/everypolitician-popolo
+  {
+    mps: popolo.people,
+    areas: popolo.areas,
+    parties: popolo.organizations.where(classification: 'party'),
+  }
+end
+```
+
+This configuration will create 3 Jekyll Collections: `_mps`, `_areas` and `_parties`. These won't exist on disk, they are just "virtual" collections.
 
 ## Development
 
@@ -32,10 +46,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/jekyll-popolo.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/theyworkforyou/jekyll-popolo.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
