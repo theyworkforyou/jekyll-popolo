@@ -6,7 +6,7 @@ module Jekyll
   module Popolo
     def self.register(popolo_name, popolo_json_string)
       @popolo_files ||= {}
-      @popolo_files[popolo_name] = Everypolitician::Popolo.parse(popolo_json_string)
+      @popolo_files[popolo_name] = ::Everypolitician::Popolo.parse(popolo_json_string)
     end
 
     def self.process(popolo_name)
