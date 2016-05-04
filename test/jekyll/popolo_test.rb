@@ -5,7 +5,15 @@ class Jekyll::PopoloTest < Minitest::Test
     refute_nil ::Jekyll::Popolo::VERSION
   end
 
-  def test_it_does_something_useful
-    assert false
+  def site
+    @site ||= Jekyll::Site.new(Jekyll.configuration)
+  end
+
+  def test_creating_mps_collection
+    Jekyll::Popolo.register :senate, File.read('test/fixtures/au-senate.json')
+    Jekyll::Popolo.process(:senate) { |p| { mps: p.persons } }
+    Jekyll::Popolo.generate(site)
+    assert site.collections.key?('mps'), "Expected site to have an mps collection"
+    assert_equal 475, site.collections['mps'].docs.size
   end
 end
