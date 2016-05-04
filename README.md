@@ -25,7 +25,9 @@ Or install it yourself as:
 You need to explicitly specify what data you want in each collection. Put the following in `_plugins/popolo.rb`:
 
 ```ruby
-Jekyll::Popolo.register do |popolo|
+Jekyll::Popolo.register(:senate, File.read('australia-senate-popolo.json'))
+
+Jekyll::Popolo.process(:senate) do |popolo|
   # `popolo` is an instance of `Everypolitician::Popolo`
   # @see https://github.com/everypolitician/everypolitician-popolo
   {
