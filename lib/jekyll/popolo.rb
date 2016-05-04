@@ -4,6 +4,12 @@ require 'everypolitician/popolo'
 
 module Jekyll
   module Popolo
+    class PopoloGenerator < Jekyll::Generator
+      def generate(site)
+        Jekyll::Popolo.generate(site)
+      end
+    end
+
     def self.register(popolo_name, popolo_json_string)
       @popolo_files ||= {}
       @popolo_files[popolo_name] = ::Everypolitician::Popolo.parse(popolo_json_string)
