@@ -10,8 +10,8 @@ class Jekyll::PopoloTest < Minitest::Test
   end
 
   def test_creating_mps_collection
-    Jekyll::Popolo.register :senate, File.read('test/fixtures/au-senate.json')
-    Jekyll::Popolo.process(:senate) { |site, p| { mps: p['persons'] } }
+    Jekyll::Popolo.register_popolo_file :senate, File.read('test/fixtures/au-senate.json')
+    Jekyll::Popolo.process { |site, p| p.create_jekyll_collections(mps: p.files[:senate]['persons']) }
     Jekyll::Popolo.generate(site)
     assert site.collections.key?('mps'), "Expected site to have an mps collection"
     assert_equal 475, site.collections['mps'].docs.size
