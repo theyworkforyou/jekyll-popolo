@@ -25,15 +25,14 @@ Or install it yourself as:
 You need to explicitly specify what data you want in each collection. Put the following in `_plugins/popolo.rb`:
 
 ```ruby
-Jekyll::Popolo.register(:senate, File.read('australia-senate-popolo.json'))
+Jekyll::Popolo.register_popolo_file(:senate, File.read('australia-senate-popolo.json'))
 
-Jekyll::Popolo.process(:senate) do |popolo|
-  # `popolo` is a Hash with string keys
-  {
-    mps: popolo['people'],
+Jekyll::Popolo.process do |site, popolo|
+  popolo.create_jekyll_collections(
+    mps: popolo['people'].each { |p| p['layout'] = 'special_person_layout' },
     areas: popolo['areas'],
     parties: popolo['organizations'].select { |o| o['classification'] == 'party' },
-  }
+  )
 end
 ```
 
